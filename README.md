@@ -86,6 +86,38 @@ We compare three settings:
 - **`make_mock_orr_k_matrix(k, epsilon, gamma=0.5)`**  
   Creates a modified RR matrix by perturbing the standard RR mechanism and re-normalizing.
 
+---
+
+### 3. SimulationStudy.py: Runs Our 3 Settings on Simulated Data to Compare Performance
+
+For each simulation run, the file:
+- Generates multinomial data  
+- Fits each method  
+- Computes mean squared error (MSE)  
+- Computes coverage probability (CP)  
+
+The results are then stored in a pandas data frame for further analysis.
+
+### Main Functions
+
+- **`run_one_simulation(n, d, k, B_true, epsilon, cov_type="independent", seed=None)`**  
+  Runs a single simulation replicate.  
+  It:
+  - generates data using `generate_data`  
+  - fits the non-private, RR-k-D-R, and ORR-k-D-R models  
+  - computes MSE and coverage probability for each method  
+  - returns the results as a dictionary  
+
+- **`run_simulation_study(n=1000, d=4, k=3, B_true=None, eps_list=(0.1, 0.3, 0.5, 1.0), B=100, cov_types=("independent", "dependent"))`**  
+  Runs the full simulation study across:
+  - multiple privacy levels \( \epsilon \)  
+  - multiple covariance structures  
+  - multiple simulation replicates  
+
+  The output is returned as a pandas data frame, where each row corresponds to one simulation replicate.
+
+
+
 
 
 
