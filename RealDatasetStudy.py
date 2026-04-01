@@ -28,38 +28,20 @@ def load_person_data(filepath="person.csv"):
     return pd.read_csv(filepath, low_memory=False)
 
 
-def prepare_real_data(filepath="person.csv", sample_size=10000, random_state=42):
-    """
-    Load and prepare the real dataset for analysis.
-
-    Steps:
-    - load person-level data
-    - collapse injury severity into 3 classes
-    - select predictors
-    - remove missing values
-    - remove invalid ages
-    - sample observations
-    - one-hot encode predictors
-
-    Returns
-    -------
-    X : ndarray of shape (n, d)
-        Predictor matrix.
-    Y : ndarray of shape (n,)
-        Response vector.
-    df : DataFrame
-        Processed sampled data.
-    """
+def prepare_real_data(filepath="person.csv", sample_size=50000, random_state=42):
     df = load_person_data(filepath)
 
     df["Y"] = df["INJ_SEV"].apply(collapse_severity)
 
-    cols = ["AGE", "SEX", "PER_ALCH", "PER_DRUG", "SEAT_POS"]
+    cols = ["AGE", "SEX", "PER_ALCH", "PER_DRUG"]
 
     df = df[cols + ["Y"]].dropna()
     df = df[(df["AGE"] >= 0) & (df["AGE"] <= 120)]
 
     df = df.sample(n=sample_size, random_state=random_state)
+
+    # standardize age
+    df["AGE"] = (df["AGE"] - df["AGE"].mean()) / df["AGE"].std()
 
     X = pd.get_dummies(df[cols], drop_first=True)
     X = X.astype(float).values
