@@ -155,18 +155,27 @@ The main quantities of interest are:
 
 ### 6. main.py: Main Entry Point for Running the Evaluation
 
-NOTE: to run the entire loop, you only need to run this file
+NOTE: to run the entire loop, you only need to run this file, you need to input mode: "simulation" or "real" to run either the Simulated Data or the Real Dataset Implementation
 
-- Sets the number of classes \(k\) and covariates \(d\)  
-- Defines the true coefficient matrix \(B_{\text{true}}\)  
-- Calls `run_simulation_study` to generate results across:
-  - multiple privacy levels \( \epsilon \)  
-  - multiple covariance structures  
-  - multiple simulation replicates  
-- Prints:
-  - the first few rows of the results  
-  - a summarized table of MSE and coverage  
-- Calls `plot_results` to visualize performance  
+### Main Functions
+
+- **`run_simulation()`** 
+  -Sets the number of classes \(k\) and covariates \(d\)  
+  - Defines the true coefficient matrix \(B_{\text{true}}\)  
+  - Calls `run_simulation_study` to generate results across:
+    - multiple privacy levels \( \epsilon \)  
+    - multiple covariance structures  
+    - multiple simulation replicates  
+  - Prints:
+    - the first few rows of the results  
+    - a summarized table of MSE and coverage  
+  - Calls `plot_results` to visualize performance
+ 
+- **`run_real()`**
+  - Runs RealDatasetStudy functions and prints results
+ 
+- **`main(mode=...)`**
+  - Will either run the suimualtion or RealDataset Study based on wether you give it "real" or "simulation" as an argument for mode
 
 
 
