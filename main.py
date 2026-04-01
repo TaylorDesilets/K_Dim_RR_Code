@@ -1,15 +1,18 @@
 import numpy as np
 from Statistics import summarize_results, plot_results
 from SimulationStudy import run_simulation_study
-# some change
-def main():
+from RealDatasetStudy import run_real_data_analysis
+
+
+
+def run_simulation():
     k = 3
     d = 4
 
     B_true = np.array([
-        [1.0, 0.5, -0.5, 0.8],     # class 0 vs baseline
-        [-0.8, 0.7, 0.3, -0.6]     # class 1 vs baseline
-    ])  # shape (k-1, d)
+        [1.0, 0.5, -0.5, 0.8],
+        [-0.8, 0.7, 0.3, -0.6]
+    ])
 
     df = run_simulation_study(
         n=1000,
@@ -26,6 +29,26 @@ def main():
     print(summarize_results(df))
     plot_results(df)
 
+def run_real():
+    run_real_data_analysis(
+        filepath="person.csv",
+        sample_size=10000,
+        epsilon=0.5,
+        random_state=42
+    )
+
+    print("\nFinished real data analysis.")
+
+def main(mode="simulation"):
+    if mode == "simulation":
+        run_simulation()
+
+    elif mode == "real":
+        run_real()
+
+    else:
+        raise ValueError("mode must be 'simulation' or 'real'")
+
 
 if __name__ == "__main__":
-    main()
+    main(mode="real") 
