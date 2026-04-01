@@ -18,31 +18,29 @@ This module simulates, privatizes, and estimates a multinomial logistic regressi
 ### Main Functions
 
 - **`make_rr_k_matrix(k, epsilon)`**  
-  Constructs the \(k \times k\) randomized response matrix \(P\).  
+  Constructs the $k \times k$ randomized response matrix $P\$.  
   - Diagonal: probability of reporting the true label  
   - Off-diagonal: probability of misreporting  
-  - Smaller \( \epsilon \) → stronger privacy
+  - Smaller $\epsilon$ → stronger privacy
 
 - **`multinomial_probs(X, B)`**  
   Computes class probabilities from a multinomial logistic regression model (last class as baseline).
 
 - **`generate_data(n, d, B, cov_type, seed)`**  
-  Simulates covariates \(X\), true probabilities, and labels \(Y\) from the MLR model.
+  Simulates covariates $X$, true probabilities, and labels $Y$ from the MLR model.
 
 - **`privatize_labels(Y, P)`**  
-  Applies the randomized response mechanism to produce privatized labels \(Y^*\).
+  Applies the randomized response mechanism to produce privatized labels $Y^*$.
 
 - **`observed_probs(X, B, P)`**  
   Computes observed probabilities  
-  \[
-  q_{ij} = \sum_k \Pr(Y^* = j \mid Y = k)\Pr(Y = k \mid X_i)
-  \]
+  $q_{ij} = \sum_k \Pr(Y^* = j \mid Y = k)\Pr(Y = k \mid X_i)$
 
 - **`neg_loglik(beta_vec, X, Y_star, P, k, lambda_reg)`**  
   Negative log-likelihood for privatized data with L2 regularization.
 
 - **`fit_privatized_mlr(X, Y_star, P)`**  
-  Estimates model parameters using BFGS optimization. Returns \( \hat{B} \), covariance (if available), and optimizer output.
+  Estimates model parameters using BFGS optimization. Returns $\hat{B} $, covariance (if available), and optimizer output.
 
 ### Procedure
 
@@ -57,8 +55,8 @@ This module simulates, privatizes, and estimates a multinomial logistic regressi
 
 We compare three settings:
 - Non-private estimation  (NP)
-- Standard \(k\)-class randomized response (RR)  
-- Our Optimal Method for \(k\)-class randomized response (ORR-k-D-R)  
+- Standard $k$-class randomized response (RR)  
+- Our Optimal Method for $k$-class randomized response (ORR-k-D-R)  
 
 ### Main Functions
 
@@ -68,8 +66,8 @@ We compare three settings:
 
 - **`fit_rr_kdr(X, Y, epsilon, k, seed=None)`**  
   Setting 2: Standard randomized response.  
-  - Constructs \(P\) using `make_rr_k_matrix`  
-  - Privatizes labels \(Y \rightarrow Y^*\)  
+  - Constructs $P$ using `make_rr_k_matrix`  
+  - Privatizes labels $Y \rightarrow Y^*$ 
   - Fits the model using privatized data  
 
 - **`fit_orr_kdr(X, Y, epsilon, k, gamma=0.5, seed=None)`**  
@@ -110,7 +108,7 @@ The results are then stored in a pandas data frame for further analysis.
 
 - **`run_simulation_study(n=1000, d=4, k=3, B_true=None, eps_list=(0.1, 0.3, 0.5, 1.0), B=100, cov_types=("independent", "dependent"))`**  
   Runs the full simulation study across:
-  - multiple privacy levels \( \epsilon \)  
+  - multiple privacy levels $\epsilon$  
   - multiple covariance structures  
   - multiple simulation replicates  
 
@@ -146,8 +144,8 @@ The main quantities of interest are:
 
 - **`plot_results(df)`**  
   Produces plots of:
-  - MSE versus \( \epsilon \)  
-  - Coverage probability versus \( \epsilon \)  
+  - MSE versus $\epsilon$  
+  - Coverage probability versus $\epsilon$
 
   Separate plots are created for each covariance structure.
 
@@ -160,10 +158,10 @@ NOTE: to run the entire loop, you only need to run this file, you need to input 
 ### Main Functions
 
 - **`run_simulation()`** 
-  -Sets the number of classes \(k\) and covariates \(d\)  
-  - Defines the true coefficient matrix \(B_{\text{true}}\)  
+  -Sets the number of classes $k$ and covariates $d$
+  - Defines the true coefficient matrix $B_{\text{true}}$
   - Calls `run_simulation_study` to generate results across:
-    - multiple privacy levels \( \epsilon \)  
+    - multiple privacy levels $\epsilon$
     - multiple covariance structures  
     - multiple simulation replicates  
   - Prints:
