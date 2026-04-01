@@ -10,11 +10,10 @@ To run the code, execute the following command in your terminal:
 ```bash
 python main.py
 ```
-I will go over Each File in this Repository and each of their purposes. 
+I will go over Each File in this Repository and each of their purposes.
+---
 ### 1. RRAlgorithm.py: Implementation of Privatisation Mechanism
 This module simulates, privatizes, and estimates a multinomial logistic regression (MLR) model under a \(k\)-class randomized response mechanism.
-
----
 
 ### Main Functions
 
@@ -45,11 +44,49 @@ This module simulates, privatizes, and estimates a multinomial logistic regressi
 - **`fit_privatized_mlr(X, Y_star, P)`**  
   Estimates model parameters using BFGS optimization. Returns \( \hat{B} \), covariance (if available), and optimizer output.
 
----
-
 ### Procedure
 
 1. Generate data with `generate_data`  
 2. Create privacy mechanism with `make_rr_k_matrix`  
 3. Privatize labels using `privatize_labels`  
 4. Estimate parameters with `fit_privatized_mlr`
+
+---
+
+### 2. SettingsImplementation.py: Implementation of Benchmarking Method to test our algorithm. 
+
+We compare three settings:
+- Non-private estimation  (NP)
+- Standard \(k\)-class randomized response (RR)  
+- Our Optimal Method for \(k\)-class randomized response (ORR-k-D-R)  
+
+### Main Functions
+
+- **`fit_np(X, Y, k)`**  
+  Setting 1: Non-private model.  
+  Uses the identity matrix (no noise) and fits the model directly.
+
+- **`fit_rr_kdr(X, Y, epsilon, k, seed=None)`**  
+  Setting 2: Standard randomized response.  
+  - Constructs \(P\) using `make_rr_k_matrix`  
+  - Privatizes labels \(Y \rightarrow Y^*\)  
+  - Fits the model using privatized data  
+
+- **`fit_orr_kdr(X, Y, epsilon, k, gamma=0.5, seed=None)`**  
+  Setting 3: Placeholder ORR-k-D-R method.  
+  - Uses a perturbed RR matrix  
+  - Projects rows onto the probability simplex  
+  - Simulates a learned privatization mechanism  
+
+### Helper Functions
+
+- **`project_rows_to_simplex(A)`**  
+  Ensures each row is positive and sums to 1.
+
+- **`make_mock_orr_k_matrix(k, epsilon, gamma=0.5)`**  
+  Creates a modified RR matrix by perturbing the standard RR mechanism and re-normalizing.
+
+
+
+
+
