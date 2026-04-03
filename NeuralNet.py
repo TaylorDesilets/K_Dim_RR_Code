@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
+from RRAlgorithm import privatize_labels, fit_privatized_mlr
 
 class TransitionNet(nn.Module):
     """
@@ -61,45 +62,66 @@ def privacy_loss_fn(beta, P):
     diag_penalty = torch.sum(torch.diag(P))
     return beta_penalty + diag_penalty
 
-def utility_loss_fn(P):
+def utility_loss_fn(X, Y_star, B, P):
     """
-    encourage transitions that preserve signal.
-    Smaller off-diagonal mass means better utility.
+    Likelihood-based utility loss for privatized multinomial logistic regression.
+    Smaller negative log-likelihood means better utility.
     """
-    off_diag = P - torch.diag(torch.diag(P))
-    return torch.sum(off_diag ** 2)
+    eta = X @ B.T                                      # shape (n, k-1)
+    max_eta = torch.max(eta, dim=1, keepdim=True).values
+    eta_stable = eta - max_eta
 
-def learn_transition_matrix(k, beta, gamma=0.5, epochs=500, lr=1e-2, device="cpu"):
+    exp_eta = torch.exp(eta_stable)
+    denom = 1.0 + torch.sum(exp_eta, dim=1, keepdim=True)
+
+    probs_nonbaseline = exp_eta / denom
+    probs_baseline = 1.0 / denom
+    Pi = torch.cat([probs_nonbaseline, probs_baseline], dim=1)   # shape (n, k)
+
+    Q = Pi @ P                                               # observed privatized probabilities
+    Q = torch.clamp(Q, min=1e-12)
+
+    n = Y_star.shape[0]
+    loss = -torch.sum(torch.log(Q[torch.arange(n), Y_star]))
+
+    return loss
+
+def learn_transition_matrix(X, Y_star, k, gamma=0.5, epochs=500, lr=1e-2, device="cpu"):
     '''
     Learn optimal transition matrix P using a neural network.
 
     Objective:
         balance privacy and utility via:
-            total_loss = -(1 - γ)*privacy + γ*utility
+            total_loss = (1 - γ)*privacy + γ*utility
     '''
+    X_torch = torch.tensor(X, dtype=torch.float32, device=device) # convert covariates to torch
+    Y_star_torch = torch.tensor(Y_star, dtype=torch.long, device=device) # privatized labels as torch integers
+
     model = TransitionNet(k).to(device) # initialise neural net that parameterises P
-    optimizer = optim.Adam(model.parameters(), lr=lr) # adam optimization updates network parameters theta
+
+    d = X.shape[1]
+    B = nn.Parameter(torch.zeros((k - 1, d), dtype=torch.float32, device=device)) # regression coefficients
+
+    optimizer = optim.Adam(list(model.parameters()) + [B], lr=lr) # jointly update theta and B
 
     best_P = None
-    best_loss = float("inf") # initialise loss so improvement is recorded
-
-    beta_torch = torch.tensor(beta, dtype=torch.float32, device=device) # convert beta from MLR into a torch tensor for loss computations
+    best_loss = float("inf")
 
     for epoch in range(epochs):
-        P = build_transition_matrix(model, k, device=device) # build current transition matrix P(theta( from neural network))
+        P = build_transition_matrix(model, k, device=device) # build current transition matrix P(theta) from neural network
 
-        L_privacy = privacy_loss_fn(beta_torch, P) # penalize true label
-        L_utility = utility_loss_fn(P) # penalize excessive distortion of labels
+        L_privacy = torch.sum(torch.diag(P)) # penalize large diagonal entries
+        L_utility = utility_loss_fn(X_torch, Y_star_torch, B, P) # likelihood-based utility loss
 
-        total_loss = -(1 - gamma) * L_privacy + gamma * L_utility # OBJECTIVE FUNCTION
+        total_loss = (1 - gamma) * L_privacy + gamma * L_utility # OBJECTIVE FUNCTION
 
         optimizer.zero_grad() # reset gradients from previous iteration
         total_loss.backward() # back propogate gradients thru network
-        optimizer.step() # update theta via adam
+        optimizer.step() # update theta and B via adam
 
-        current_loss = total_loss.item() # get scalar loss value & update best reansition matrix if current loss improves
+        current_loss = total_loss.item() # get scalar loss value & update best transition matrix if current loss improves
         if current_loss < best_loss:
             best_loss = current_loss
-            best_P = P.detach().cpu().numpy() # store as numpy not gradients
+            best_P = P.detach().cpu().numpy()
 
-    return best_P # returns the best learned transition matrix
+    return best_P

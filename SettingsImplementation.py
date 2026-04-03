@@ -29,29 +29,13 @@ def project_rows_to_simplex(A):
     return A / A.sum(axis=1, keepdims=True)
 
 
-def make_mock_orr_k_matrix(k, epsilon, gamma=0.5):
-    """
-    Placeholder for a learned ORR-k-D-R mechanism.
-
-    For now, this slightly perturbs the standard RR matrix
-    and reprojects rows onto the simplex.
-    """
-    base = make_rr_k_matrix(k, epsilon)
-
-    tweak = np.eye(k) - np.ones((k, k)) / k
-    P = base + gamma * 0.05 * tweak
-    P = project_rows_to_simplex(P)
-
-    return P
 
 
 def fit_orr_kdr(X, Y, epsilon, k, gamma=0.5, seed=None):
     """
-    ORR-k-D-R with learned transition matrix
+    Setting 3: ORR-k-D-R with learned transition matrix.
     """
-    B_init, _, _ = fit_np(X, Y, k)
-
-    P_orr = learn_transition_matrix(k, B_init, gamma=gamma)
+    P_orr = learn_transition_matrix(X, Y, k, gamma=gamma)
 
     Y_star = privatize_labels(Y, P_orr, seed=seed)
 

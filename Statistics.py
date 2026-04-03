@@ -49,36 +49,39 @@ def summarize_results(df):
     return summary.reset_index()
 
 
-def plot_results(df,k):
+def plot_results(df, k):
     summary = df.groupby(["cov_type", "epsilon"]).mean(numeric_only=True).reset_index()
 
     cov_types = summary["cov_type"].unique()
 
     for cov_type in cov_types:
         sub = summary[summary["cov_type"] == cov_type]
+        fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
-        # --- MSE plot ---
-        plt.figure()
-        plt.plot(sub["epsilon"], sub["mse_np"], marker='o', label="Non-private")
-        plt.plot(sub["epsilon"], sub["mse_rrkdr"], marker='o', label=f'"RR-"{k}"D-R"')
-        plt.plot(sub["epsilon"], sub["mse_orrkdr"], marker='o', label=f'"ORR-"{k}"D-R"')
+        # ================= MSE =================
+        axes[0].plot(sub["epsilon"], sub["mse_np"], marker='o', label="Non-private", color = "gray")
+        axes[0].plot(sub["epsilon"], sub["mse_rrkdr"], marker='o', label=f"RR-{k}D-R",color="slateblue")
+        axes[0].plot(sub["epsilon"], sub["mse_orrkdr"], marker='o', label=f"ORR-{k}D-R",color="hotpink")
 
-        plt.xlabel("Epsilon")
-        plt.ylabel("MSE")
-        plt.title(f"MSE vs Epsilon ({cov_type})")
-        plt.legend()
-        plt.grid()
-        plt.show()
+        axes[0].set_xlabel("Epsilon")
+        axes[0].set_ylabel("MSE")
+        axes[0].set_title("MSE")
+        axes[0].grid()
+        axes[0].legend()
 
-        # --- Coverage plot ---
-        plt.figure()
-        plt.plot(sub["epsilon"], sub["cp_np"], marker='o', label="Non-private")
-        plt.plot(sub["epsilon"], sub["cp_rrkdr"], marker='o', label=f'"RR-"{k}"D-R"')
-        plt.plot(sub["epsilon"], sub["cp_orrkdr"], marker='o', label=f'"ORR-"{k}"D-R"')
+        # ================= Coverage =================
+        axes[1].plot(sub["epsilon"], sub["cp_np"], marker='o', label="Non-private",color="gray")
+        axes[1].plot(sub["epsilon"], sub["cp_rrkdr"], marker='o', label=f"RR-{k}D-R",color="slateblue")
+        axes[1].plot(sub["epsilon"], sub["cp_orrkdr"], marker='o', label=f"ORR-{k}D-R",color = "hotpink")
 
-        plt.xlabel("Epsilon")
-        plt.ylabel("Coverage Probability")
-        plt.title(f"Coverage vs Epsilon ({cov_type})")
-        plt.legend()
-        plt.grid()
+        axes[1].set_xlabel("Epsilon")
+        axes[1].set_ylabel("Coverage Probability")
+        axes[1].set_title("Coverage")
+        axes[1].grid()
+        axes[1].legend()
+
+        # --- overall title ---
+        fig.suptitle(f"{cov_type.capitalize()} Covariates")
+
+        plt.tight_layout()
         plt.show()

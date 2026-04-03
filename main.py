@@ -34,6 +34,7 @@ def run_real():
         filepath="person.csv",
         sample_size=100000,
         epsilon=0.5,
+        gamma=0.5,
         random_state=42
     )
 
