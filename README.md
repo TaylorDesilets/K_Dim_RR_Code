@@ -82,19 +82,16 @@ We compare three settings:
   Setting 3: ORR-k-D-R (OUR METHOD)  
  This function implements the **Optimal Randomized Response (ORR)** mechanism for the \(k\)-dimensional categorical setting by learning a data-driven transition matrix.
 
-Procedure:
-- Fit a **non-private multinomial logistic regression** to obtain an initial estimate \( \hat{B} \).
-- Use a **neural network–based method** to learn an optimal transition matrix \( P_{\text{orr}} \), balancing privacy and utility via `gamma`.
-- Privatize the labels using the learned matrix: $Y \rightarrow Y^*$.
-- Fit the **privatized MLR model** using $Y^*$ and $P_{\text{orr}}$.
-Returns:
-- `B_hat` — Estimated regression coefficients from the privatized model  
-- `P_orr` — Learned transition (randomization) matrix  
-- `Y_star` — Privatized labels  
-Notes:
-- Unlike standard RR, this method **learns the transition matrix** instead of using a fixed one.  
-- Designed to **optimize the privacy–utility tradeoff**.  
-- The parameter `gamma` controls the strength of the privacy penalty during learning.
+  Procedure:
+  - Fit a **non-private multinomial logistic regression** to obtain an initial estimate \( \hat{B} \).
+  - Use a **neural network–based method** to learn an optimal transition matrix \( P_{\text{orr}} \), balancing privacy and utility via `gamma`.
+  - Privatize the labels using the learned matrix: $Y \rightarrow Y^*$.
+  - Fit the **privatized MLR model** using $Y^*$ and $P_{\text{orr}}$.
+  Returns:
+  - `B_hat` — Estimated regression coefficients from the privatized model  
+  - `P_orr` — Learned transition (randomization) matrix  
+  - `Y_star` — Privatized labels  
+
 
 - **`project_rows_to_simplex(A)`**  
   Ensures each row is positive and sums to 1.
