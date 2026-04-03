@@ -85,8 +85,8 @@ We compare three settings:
 Procedure:
 - Fit a **non-private multinomial logistic regression** to obtain an initial estimate \( \hat{B} \).
 - Use a **neural network–based method** to learn an optimal transition matrix \( P_{\text{orr}} \), balancing privacy and utility via `gamma`.
-- Privatize the labels using the learned matrix: \( Y \rightarrow Y^* \).
-- Fit the **privatized MLR model** using \( Y^* \) and \( P_{\text{orr}} \).
+- Privatize the labels using the learned matrix: $Y \rightarrow Y^*$.
+- Fit the **privatized MLR model** using $Y^*$ and $P_{\text{orr}}$.
 Returns:
 - `B_hat` — Estimated regression coefficients from the privatized model  
 - `P_orr` — Learned transition (randomization) matrix  
@@ -104,28 +104,27 @@ Notes:
 ### Overview
 
 We parameterize the transition probabilities using a neural network  
-\[
-\hat{P}_{kj}(\theta) = f^\theta(Y = k, Y^* = j),
-\]
-where:
-- \(Y\) is the true label  
-- \(Y^*\) is the privatized label  
-- \(f^\theta\) is a neural network that outputs a score for each pair \((k,j)\)
 
-These scores are normalized row-wise to produce a valid transition matrix \(P \in \mathbb{R}^{k \times k}\), where each row sums to 1.
+$\hat{P}_{kj}(\theta) = f^\theta(Y = k, Y^* = j)$,
+where:
+- $Y$ is the true label  
+- $Y^*$ is the privatized label  
+- $f^\theta$ is a neural network that outputs a score for each pair $(k,j)$
+
+These scores are normalized row-wise to produce a valid transition matrix $P \in \mathbb{R}^{k \times k}$, where each row sums to 1.
 
 
  CLASS **`TransitionNet`**
 A small feedforward neural network that takes:
-- one-hot encoding of the true label \(Y\)
-- one-hot encoding of the privatized label \(Y^*\)
+- one-hot encoding of the true label $Y$
+- one-hot encoding of the privatized label $Y^*$
 
-and outputs a scalar score in \((0,1)\) representing the transition weight.
+and outputs a scalar score in $(0,1)$ representing the transition weight.
 
 
 **`build_transition_matrix`**
-Constructs the full transition matrix \(P\) by:
-- evaluating the network on all \((k,j)\) pairs  
+Constructs the full transition matrix $P$ by:
+- evaluating the network on all $(k,j)$ pairs  
 - applying a softmax across each row to ensure valid probabilities  
 
 
@@ -133,7 +132,7 @@ Constructs the full transition matrix \(P\) by:
 Loss Functions
 
 - **Privacy loss**
-  - Penalizes large diagonal entries of \(P\)
+  - Penalizes large diagonal entries of $P$
   - Intuition: high diagonal values reveal the true label too often  
 
 - **Utility loss**
@@ -147,15 +146,13 @@ Loss Functions
 This is the main function that learns the optimal mechanism.
 
 **Objective:**
-\[
-\text{Loss} = -(1 - \gamma)\,\text{Privacy} + \gamma\,\text{Utility}
-\]
+$text{Loss} = -(1 - \gamma)\,\text{Privacy} + \gamma\,\text{Utility}$
 
-- \(\gamma \in [0,1]\) controls the privacy–utility tradeoff  
+- $\gamma \in [0,1]$ controls the privacy–utility tradeoff  
 - Optimization is done using Adam  
 
 The function:
-1. Builds \(P(\theta)\) from the neural network  
+1. Builds $P(\theta)$ from the neural network  
 2. Computes privacy and utility losses  
 3. Updates network parameters via backpropagation  
 4. Returns the best transition matrix found during training  
@@ -170,14 +167,14 @@ The function:
 
 ### Output
 
-- `P` (numpy array of shape \(k \times k\)):  
+- `P` (numpy array of shape $k \times k\$:  
   learned transition matrix satisfying:
   - non-negative entries  
   - rows sum to 1  
 
 
-- If \(\gamma\) is small → prioritize **privacy** (more noise)  
-- If \(\gamma\) is large → prioritize **utility** (less distortion)  
+- If $\gamma$ is small → prioritize **privacy** (more noise)  
+- If $\gamma$ is large → prioritize **utility** (less distortion)  
 
 This replaces the infeasible “feasible region optimization” approach by learning a mechanism directly from data using a neural network.
 
@@ -241,8 +238,8 @@ The dataset is loaded from `person.csv` and processed as follows:
 
 - **`prepare_real_data(filepath, sample_size, random_state)`**  
   Loads and preprocesses the dataset, returning:
-  - predictor matrix \(X\)  
-  - response vector \(Y\)  
+  - predictor matrix $X$
+  - response vector $Y$ 
   - processed DataFrame  
 
 - **`fit_private_model(X, Y, epsilon, seed)`**  
@@ -276,7 +273,7 @@ The main quantities of interest are:
   It returns the proportion of true coefficients covered by approximate 95% confidence intervals.
 
 - **`summarize_results(df)`**  
-  Aggregates the simulation results by covariance structure and privacy level \( \epsilon \).  
+  Aggregates the simulation results by covariance structure and privacy level $\epsilon$.  
   It returns the mean MSE and coverage probability for each method.
 
 - **`plot_results(df)`**  
