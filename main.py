@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from Statistics import summarize_results, plot_results
 from SimulationStudy import run_simulation_study
 from RealDatasetStudy import run_real_data_analysis
@@ -6,9 +7,8 @@ from RealDatasetStudy import run_real_data_analysis
 
 
 def run_simulation():
-    k = 3
     d = 4
-
+    k=3
     B_true = np.array([
         [1.0, 0.5, -0.5, 0.8],
         [-0.8, 0.7, 0.3, -0.6]
@@ -35,15 +35,18 @@ def run_real():
         sample_size=100000,
         epsilon=0.5,
         random_state=42
+        k=3
     )
 
     print("\nFinished real data analysis.")
 
-def main(mode="simulation"):
+def main(mode="real"):
     if mode == "simulation":
+        print("Running simulation")
         run_simulation()
 
     elif mode == "real":
+        print("Running real")
         run_real()
 
     else:
@@ -51,4 +54,9 @@ def main(mode="simulation"):
 
 
 if __name__ == "__main__":
-    main(mode="simulation") 
+
+  
+    if len(sys.argv) > 1:
+        main(sys.argv[1]) 
+    else: 
+        main()

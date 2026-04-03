@@ -1,6 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+def get_k_val():
+    '''
+    returns the value of k to input into the graph legend
+    '''
+
+
 def compute_mse(B_hat, B_true):
     """
     Mean squared error across all coefficients.
@@ -57,8 +64,8 @@ def plot_results(df):
         # --- MSE plot ---
         plt.figure()
         plt.plot(sub["epsilon"], sub["mse_np"], marker='o', label="Non-private")
-        plt.plot(sub["epsilon"], sub["mse_rrkdr"], marker='o', label="RR-k-D-R")
-        plt.plot(sub["epsilon"], sub["mse_orrkdr"], marker='o', label="ORR-k-D-R")
+        plt.plot(sub["epsilon"], sub["mse_rrkdr"], marker='o', label=f'"RR-"{get_k_val()}"D-R"')
+        plt.plot(sub["epsilon"], sub["mse_orrkdr"], marker='o', label=f'"ORR-"{get_k_val()}"D-R"')
 
         plt.xlabel("Epsilon")
         plt.ylabel("MSE")
@@ -70,8 +77,8 @@ def plot_results(df):
         # --- Coverage plot ---
         plt.figure()
         plt.plot(sub["epsilon"], sub["cp_np"], marker='o', label="Non-private")
-        plt.plot(sub["epsilon"], sub["cp_rrkdr"], marker='o', label="RR-k-D-R")
-        plt.plot(sub["epsilon"], sub["cp_orrkdr"], marker='o', label="ORR-k-D-R")
+        plt.plot(sub["epsilon"], sub["cp_rrkdr"], marker='o', label=f'"RR-"{get_k_val()}"D-R"')
+        plt.plot(sub["epsilon"], sub["cp_orrkdr"], marker='o', label=f'"ORR-"{get_k_val()}"D-R"')
 
         plt.xlabel("Epsilon")
         plt.ylabel("Coverage Probability")
