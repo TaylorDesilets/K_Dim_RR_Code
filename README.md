@@ -51,7 +51,7 @@ This module simulates, privatizes, and estimates a multinomial logistic regressi
 - **`fisher_information_privatized_3class(X, B, P)`**  
   Computes the empirical Fisher information matrix:
   $I_n(\beta, P) = \frac{1}{n} \sum_{i=1}^n \sum_{j=0}^{k-1}\frac{1}{q_{ij}} \, g_{ij} g_{ij}^\top$
-  where $ g_{ij} = \nabla_\beta q_{ij} $.
+  where $g_{ij} = \nabla_\beta q_{ij}$.
 
 - **`fisher_covariance_privatized_3class(X, B, P)`**  
   Computes the asymptotic covariance of $ \hat{B} $:
