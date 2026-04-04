@@ -206,12 +206,10 @@ The results are then stored in a pandas data frame for further analysis.
 
 ---
 
-### 5. RealDatasetStudy.py: Running our 3 Settings on a real Actuary Dataset to Compare Performance
+### 5. RealDatasetStudy.py: Running our 3 Settings on a real Dataset to Compare Performance
 
-We apply our privatized multinomial logistic regression to a real-world dataset to model predictors for Car Crashes. The goal is to model injury severity while comparing:
+We apply our privatized multinomial logistic regression to a real-world dataset to model predictors for Car Crashes. The goal is to model injury severity while comparing our 3 settings
 
-- Non-private estimation  
-- Randomized response (RR) privatized estimation  
 
 Injury severity is collapsed into three categories:
 - 0: low / no injury  
