@@ -5,3 +5,6 @@ Taylors Code - Adam Optimization contains:
 - "ConfusionMatrixHardcode.py": took results directly from python file and made a confusion matrix with those values
 - "OptimalMethod.py":  For fun after everything was completed, tried to use the python equivalent of R optim() to find if ADAM was the best choice here
 -  "ReadFromCSV.py": Read from the csv
+
+Keira's Code
+- adaGradimplement.py includes all code for the AdaGrad optimizer, linear, polynomial, and rbf kernel implementation, k-fold CV and hyperparameter tuning, confusion matrices and values, as well as loss vs epoch for all 3 kernels
