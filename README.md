@@ -8,3 +8,6 @@ Taylors Code - Adam Optimization contains:
 
 Keira's Code
 - adaGradimplement.py includes all code for the AdaGrad optimizer, linear, polynomial, and rbf kernel implementation, k-fold CV and hyperparameter tuning, confusion matrices and values, as well as loss vs epoch for all 3 kernels
+
+Lava's Code
+- 413 proj.py contains all the code for RMSProp, BFGS, and Nelder-Mead optimizers, k-fold CV, hyperparametere tuning, confusion matrices and values, loss plots for all 3 methods, and a comparison between the 3 methods
